@@ -764,7 +764,7 @@ def compose_with_optional_polish(category, merchant, trigger, customer=None) -> 
 # ---------------------------------------------------------------------------
 
 try:
-    from fastapi import FastAPI
+    from fastapi import FastAPI, Response
     from pydantic import BaseModel
     import time
     from datetime import datetime, timezone
@@ -789,6 +789,10 @@ try:
         for (scope, _), _v in contexts.items():
             counts[scope] = counts.get(scope, 0) + 1
         return {"status": "ok", "uptime_seconds": int(time.time() - START), "contexts_loaded": counts}
+
+    @app.head("/v1/healthz")
+    async def healthz_head():
+        return Response(status_code=200)
 
     @app.get("/v1/metadata")
     async def metadata():
